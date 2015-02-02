@@ -10,7 +10,7 @@ $ sudo docker build -t httpserver
 ```
 ## Run a container
 ```
-$ sudo docker run -p 8081:80 -v /srv/dock1/app/wordpress/:/var/www/html/ -d -i -t httpserver /bin/bash
+$ sudo docker run -p 8081:80 -v /home/simon/dockerfiles/apache/www/:/var/www/site/ -d --name web httserver
 ```
 ## Connect to a running container
 ```

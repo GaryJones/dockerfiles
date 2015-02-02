@@ -1,6 +1,7 @@
-<? echo "<p>Hello?</p>"; 
+<? 
 
-echo "Simon Takite";
+echo "Welcome to simon homepage";
+
 phpinfo(); 
 
 ?>
