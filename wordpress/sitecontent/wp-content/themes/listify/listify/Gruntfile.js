@@ -1,0 +1,141 @@
+'use strict';
+module.exports = function(grunt) {
+
+	grunt.initConfig({
+
+		dirs: {
+			js: 'js',
+			wp_job_manager: 'inc/integrations/wp-job-manager/js',
+			wp_job_manager_bookmarks: 'inc/integrations/wp-job-manager-bookmarks/js',
+			facetwp: 'inc/integrations/facetwp/js',
+			woocommerce: 'inc/integrations/woocommerce/js'
+		},
+
+		watch: {
+			options: {
+				livereload: true,
+			},
+			js: {
+				files: [
+					'Gruntfile.js',
+					'js/source/**/*.js',
+					'inc/integrations/wp-job-manager/js/source/*.js',
+					'inc/integrations/wp-job-manager-bookmarks/js/source/*.js',
+					'inc/integrations/facetwp/js/source/*.js',
+					'inc/integrations/woocommerce/js/source/*.js'
+				],
+				tasks: ['uglify', 'clean']
+			},
+			css: {
+				files: [
+					'css/sass/*/*.scss',
+					'css/sass/*.scss'
+				],
+				tasks: ['sass', 'concat', 'cssmin', 'clean']
+			}
+		},
+
+		// uglify to concat, minify, and make source maps
+		uglify: {
+			dist: {
+				options: {
+					sourceMap: true
+				},
+				files: {
+					'<%= dirs.wp_job_manager %>/wp-job-manager.min.js': [
+						'<%= dirs.wp_job_manager %>/vendor/jquery.timepicker.min.js',
+						'<%= dirs.wp_job_manager %>/source/wp-job-manager.js',
+						'<%= dirs.wp_job_manager %>/source/wp-job-manager-gallery.js'
+					],
+					'<%= dirs.wp_job_manager %>/wp-job-manager-map.min.js': [
+						'<%= dirs.wp_job_manager %>/vendor/affix.min.js',
+						'<%= dirs.wp_job_manager %>/vendor/infobubble.js',
+						'<%= dirs.wp_job_manager %>/vendor/markerclusterer.js',
+						'<%= dirs.wp_job_manager %>/vendor/richmarker.js',
+						'<%= dirs.wp_job_manager %>/source/wp-job-manager-map.js'
+					],
+					'<%= dirs.wp_job_manager_bookmarks %>/wp-job-manager-bookmarks.min.js': [
+						'<%= dirs.wp_job_manager_bookmarks %>/source/wp-job-manager-bookmarks.js'
+					],
+					'js/app.min.js': [
+						'<%= dirs.js %>/vendor/**.js',
+						'<%= dirs.wp_job_manager %>/wp-job-manager.min.js',
+						'<%= dirs.facetwp %>/source/facetwp.js',
+						'<%= dirs.woocommerce %>/source/woocommerce.js',
+						'<%= dirs.js %>/source/app.js',
+					]
+				}
+			}
+		},
+
+		sass: {
+			dist: {
+				files: {
+					'css/editor-style.css' : 'css/sass/editor-style.scss',
+					'css/style.css' : 'css/sass/style.scss'
+				}
+			}
+		},
+
+		concat: {
+			dist: {
+				files: {
+					'css/style.css': ['css/vendor/*.css', 'css/style.css']
+				}
+			}
+		},
+
+		cssmin: {
+			dist: {
+				files: {
+					'css/style.min.css': [ 'css/style.css' ]
+				}
+			}
+		},
+
+		clean: {
+			dist: {
+				src: [
+					'css/style.css'
+				]
+			}
+		},
+
+		cssjanus: {
+			theme: {
+				options: {
+					swapLtrRtlInUrl: false
+				},
+				files: [
+					{
+						src: 'css/style.min.css',
+						dest: 'css/style.min-rtl.css'
+					}
+				]
+			}
+		},
+
+		makepot: {
+			theme: {
+				options: {
+					type: 'wp-theme'
+				}
+			}
+		}
+
+	});
+
+	grunt.loadNpmTasks( 'grunt-contrib-watch' );
+	grunt.loadNpmTasks( 'grunt-contrib-concat' );
+	grunt.loadNpmTasks( 'grunt-contrib-cssmin' );
+	grunt.loadNpmTasks( 'grunt-contrib-uglify' );
+	grunt.loadNpmTasks( 'grunt-contrib-clean' );
+	grunt.loadNpmTasks( 'grunt-contrib-sass' );
+	grunt.loadNpmTasks( 'grunt-wp-i18n' );
+	grunt.loadNpmTasks( 'grunt-cssjanus' );
+
+	// register task
+	grunt.registerTask('default', ['watch']);
+	grunt.registerTask('build', ['uglify', 'sass', 'concat', 'cssmin', 'makepot', 'cssjanus', 'clean' ]);
+
+};
